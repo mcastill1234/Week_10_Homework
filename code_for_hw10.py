@@ -65,11 +65,8 @@ class No_Exit(MDP):
             im[br, bc] = -1
             im[pp, self.n] = 1
             self.ax.cla()
-            self.ims = self.ax.imshow(im, interpolation='none',
-                                      cmap='viridis',
-                                      extent=[-0.5, self.n + 0.5,
-                                              -0.5, self.n - 0.5],
-                                      animated=True)
+            self.ims = self.ax.imshow(im, interpolation='none', cmap='viridis',
+                                      extent=[-0.5, self.n + 0.5, -0.5, self.n - 0.5], animated=True)
             self.ims.set_clim(-1, 1)
             plt.pause(0.0001)
             if pause:
@@ -269,8 +266,7 @@ def test_learn_play(d=6, num_layers=2, num_units=100,
     return animation
 
 
-def test_solve_play(d=6, draw=False,
-                    num_episodes=10, episode_length=100):
+def test_solve_play(d=6, draw=False, num_episodes=10, episode_length=100):
     game = No_Exit(d)
     qf = value_iteration(game, TabularQ(game.states, game.actions))
     for i in range(num_episodes):
@@ -282,7 +278,7 @@ def test_solve_play(d=6, draw=False,
 ##########   Test cases    
 
 # Value Iteration
-# test_solve_play()
+test_solve_play()
 # Tabular Q-learn
 # test_learn_play(iters=100000, tabular=True, batch=False)
 # Tabular Batch Q-learn

@@ -87,24 +87,23 @@ def value_iteration(mdp, q, eps=0.01, max_iters=1000):
 # Given a state, return the value of that state, with respect to the
 # current definition of the q function
 def value(q, s):
-    # Your code here (COPY FROM HW9)
-    raise NotImplementedError('value')
+    """Return Q*(s,a) based on current Q"""
+    return max(q.get(s, a) for a in q.actions)
 
 
 # Given a state, return the action that is greedy with reespect to the
 # current definition of the q function
 def greedy(q, s):
-    # Your code here (COPY FROM HW9)
-    raise NotImplementedError('greedy')
+    """ Return pi*(s) based on a greedy strategy."""
+    return argmax(q.actions, lambda a: q.get(s, a))
 
 
 def epsilon_greedy(q, s, eps=0.5):
+    """ Return an action."""
     if random.random() < eps:  # True with prob eps, random action
-        # Your code here (COPY FROM HW9)
-        raise NotImplementedError('epsilon_greedy')
-    else:
-        # Your code here (COPY FROM HW9)
-        raise NotImplementedError('epsilon_greedy')
+        return uniform_dist(q.actions).draw()
+    else:  # False with prob 1-eps, greedy action
+        return greedy(q, s)
 
 
 class TabularQ:
