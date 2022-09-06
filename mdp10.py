@@ -56,16 +56,13 @@ class MDP:
         return v
 
 
-# Perform value iteration on an MDP, also given an instance of a q
-# function.  Terminate when the max-norm distance between two
-# successive value function estimates is less than eps.
-# interactive_fn is an optional function that takes the q function as
-# argument; if it is not None, it will be called once per iteration,
-# for visuzalization
+# Perform value iteration on an MDP, also given an instance of a q function.  Terminate when the max-norm distance
+# between two successive value function estimates is less than eps.
+# interactive_fn is an optional function that takes the q function as argument; if it is not None, it will be called
+# once per iteration, for visualization
 
-# The q function is typically an instance of TabularQ, implemented as a
-# dictionary mapping (s, a) pairs into Q values This must be
-# initialized before interactive_fn is called the first time.
+# The q function is typically an instance of TabularQ, implemented as a dictionary mapping (s, a) pairs into Q values.
+# This must be initialized before interactive_fn is called the first time.
 
 def value_iteration(mdp, q, eps=0.01, max_iters=1000):
     def v(s):
@@ -130,12 +127,25 @@ class TabularQ:
 
 
 def Q_learn(mdp, q, lr=.1, iters=100, eps=0.5, interactive_fn=None):
-    # Your code here
-    raise NotImplementedError('Q_learn')
+    s = mdp.init_state()
     for i in range(iters):
         # include this line in the iteration, where i is the iteration number
-        if interactive_fn: interactive_fn(q, i)
-    pass
+        if interactive_fn:
+            interactive_fn(q, i)
+        # select an action
+        a = epsilon_greedy(q, s, eps=eps)
+        # execute selected action
+        r, s_prime = mdp.sim_transition(s, a)
+        if mdp.terminal(s):
+            target = r
+        else:
+            # find max q in for the next state and action
+            max_q = value(q, s_prime)
+            target = r + mdp.discount_factor * max_q
+        data = [(s, a, target)]
+        q.update(data, lr)
+        s = s_prime
+    return q
 
 
 # Simulate an episode (sequence of transitions) of at most
@@ -214,9 +224,7 @@ def evaluate(mdp, n_episodes, episode_length, policy):
     return score / n_episodes, length / n_episodes
 
 
-def Q_learn_batch(mdp, q, lr=.1, iters=100, eps=0.5,
-                  episode_length=10, n_episodes=2,
-                  interactive_fn=None):
+def Q_learn_batch(mdp, q, lr=.1, iters=100, eps=0.5, episode_length=10, n_episodes=2, interactive_fn=None):
     # Your code here
     raise NotImplementedError('Q_learn_batch')
     for i in range(iters):

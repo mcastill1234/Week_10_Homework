@@ -4,12 +4,13 @@ import matplotlib.pyplot as plt
 import dist
 import util
 import pickle
+import functools
 from mdp10 import MDP, TabularQ, NNQ, value_iteration, Q_learn, Q_learn_batch, greedy, sim_episode, evaluate
 
 
 class No_Exit(MDP):
-    # Like breakout or pong, but one player, no walls to break out, no
-    # way to win You can move paddle vertically up or down or stay
+    # Like breakout or pong, but one player, no walls to break out, no way to win.
+    # You can move paddle vertically up or down or stay
     actions = (+1, 0, -1)
 
     def __init__(self, field_size, ball_speed=1, random_start=True):
@@ -158,8 +159,7 @@ class No_Exit(MDP):
 ##############################
 # Display
 ##############################
-def tidy_plot(xmin, xmax, ymin, ymax, center=False, title=None,
-              xlabel=None, ylabel=None):
+def tidy_plot(xmin, xmax, ymin, ymax, center=False, title=None, xlabel=None, ylabel=None):
     # plt.ion()
     plt.figure(facecolor="white")
     ax = plt.subplot()
@@ -186,9 +186,7 @@ def tidy_plot(xmin, xmax, ymin, ymax, center=False, title=None,
     return ax
 
 
-def plot_points(x, y, ax=None, clear=False,
-                xmin=None, xmax=None, ymin=None, ymax=None,
-                style='or-'):
+def plot_points(x, y, ax=None, clear=False, xmin=None, xmax=None, ymin=None, ymax=None, style='or-'):
     if ax is None:
         if xmin == None: xmin = np.min(x) - 0.5
         if xmax == None: xmax = np.max(x) + 0.5
@@ -214,9 +212,6 @@ def plot_points(x, y, ax=None, clear=False,
     return ax
 
 
-import functools
-
-
 def toHex(s):
     lst = []
     for ch in s:
@@ -230,17 +225,14 @@ def toHex(s):
 
 ##############################
 
-def test_learn_play(d=6, num_layers=2, num_units=100,
-                    eps=0.5, iters=10000, draw=False,
-                    tabular=True, batch=False, batch_epochs=10,
-                    num_episodes=10, episode_length=100):
+def test_learn_play(d=6, num_layers=2, num_units=100, eps=0.5, iters=10000, draw=False, tabular=True, batch=False,
+                    batch_epochs=10, num_episodes=10, episode_length=100):
     iters_per_value = 1 if iters <= 10 else int(iters / 10.0)
     scores = []
 
     def interact(q, iter=0):
         if iter % iters_per_value == 0:
-            scores.append((iter, evaluate(game, num_episodes, episode_length,
-                                          lambda s: greedy(q, s))[0]))
+            scores.append((iter, evaluate(game, num_episodes, episode_length, lambda s: greedy(q, s))[0]))
             print('score', scores[-1], flush=True)
 
     game = No_Exit(d)
@@ -275,12 +267,13 @@ def test_solve_play(d=6, draw=False, num_episodes=10, episode_length=100):
         print('Reward', reward)
     return animation
 
-##########   Test cases    
+
+##########   Test cases
 
 # Value Iteration
-test_solve_play()
+# test_solve_play()
 # Tabular Q-learn
-# test_learn_play(iters=100000, tabular=True, batch=False)
+test_learn_play(iters=100000, tabular=True, batch=False)
 # Tabular Batch Q-learn
 # test_learn_play(iters=10, tabular=True, batch=True) # Check: why do we want fewer iterations here?
 # NN Q-learn
